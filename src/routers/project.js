@@ -17,7 +17,7 @@ router.post('/', auth, async (req, res) => {
 router.post('/edit/:id', async (req, res) => {
     // Edit existing project
     try {
-        const project = new Project(req.body)
+        const project = await Project.update({})
         res.status(201).send({ project })
     } catch (error) {
         res.status(400).send(error)
