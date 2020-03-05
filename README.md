@@ -1,16 +1,19 @@
 # WeDevBack
+
 MongoDB, Express, JWT, Node.JS
 
-## Download : 
+## Download :
+
 ```
 git clone https://github.com/WDcontrol/WeDevBack.git
 cd WeDevBack
 ```
 
-## Launching API : 
+## Launching API :
+
 ```
 npm install
-pm run serve
+npm run start
 ```
 
 <br>

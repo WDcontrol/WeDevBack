@@ -4,28 +4,32 @@ const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   // Create a new project
   try {
-    console.log(req.body);
+    const user = req.user;
+    req.body = { ...req.body, users: [{ user: user._id }] };
     const project = new Project(req.body);
     await project.save();
+
     res.status(201).send({ project });
   } catch (error) {
     res.status(400).send(error);
   }
 });
 
-router.get("/all", async (req, res) => {
+router.get("/all", auth, async (req, res) => {
   // get all projects
-  const projects = await Project.find({}).populate();
+  const user = req.user;
+  const projects = await Project.find({ "users.user": user });
   res.status(201).send({ projects });
 });
 
-router.get("/details/:id", async (req, res) => {
+router.get("/details/:id", auth, async (req, res) => {
   // Show details
   const id = req.params.id;
-  const project = await Project.findById("5e5c2076ccf1e21cdc089e00");
+  const user = req.user;
+  const project = await Project.find({ _id: id, "users.user": user });
   if (project) {
     res.status(201).send({ project });
   } else {
@@ -33,22 +37,11 @@ router.get("/details/:id", async (req, res) => {
   }
 });
 
-router.post("/edit/:id", async (req, res) => {
+router.post("/edit/:id", auth, async (req, res) => {
   // Edit existing project
   try {
     const id = req.params.id;
     const project = await Project.updateOne({ _id: id }, req.body);
-    res.status(201).send({ project });
-  } catch (error) {
-    res.status(400).send(error);
-  }
-});
-
-router.delete("/delete/:id", async (req, res) => {
-  // Delete
-  try {
-    const id = req.params.id;
-    const project = await Project.findOneAndDelete({ _id: id });
     res.status(201).send({ project });
   } catch (error) {
     res.status(400).send(error);

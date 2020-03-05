@@ -4,7 +4,8 @@ const projectSchema = mongoose.Schema(
   {
     title: {
       type: String,
-      trim: true
+      trim: true,
+      required: true
     },
     estimateAmount: {
       // Montant du devis
@@ -28,17 +29,30 @@ const projectSchema = mongoose.Schema(
     },
     stacks: {
       type: String,
-      trim: true
+      trim: true,
+      required: true
     },
     hourlyCostDay: {
       // Coût horaire jour
       type: Number
+    },
+    client: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Clients"
     },
     sprints: [
       {
         sprint: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Sprints"
+        }
+      }
+    ],
+    users: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Users"
         }
       }
     ]

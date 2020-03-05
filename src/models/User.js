@@ -61,15 +61,7 @@ const userSchema = mongoose.Schema(
     profil: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "UserProfils"
-    },
-    projects: [
-      {
-        project: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Projects"
-        }
-      }
-    ]
+    }
   },
   {
     timestamps: true
@@ -108,5 +100,4 @@ userSchema.statics.findByCredentials = async (email, password) => {
 };
 
 const User = mongoose.model("Users", userSchema);
-
 module.exports = User;
