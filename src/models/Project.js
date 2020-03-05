@@ -29,8 +29,7 @@ const projectSchema = mongoose.Schema(
     },
     stacks: {
       type: String,
-      trim: true,
-      required: true
+      trim: true
     },
     hourlyCostDay: {
       // Coût horaire jour

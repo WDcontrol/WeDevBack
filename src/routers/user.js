@@ -18,18 +18,7 @@ router.post("/", async (req, res) => {
 
 router.get("/all", async (req, res) => {
   // Get all
-  const users = await User.aggregate([
-    {
-      $lookup: {
-        from: "projects",
-        localField: "_id",
-        foreignField: "users.user",
-        as: "projects"
-      }
-    }
-  ]);
-
-  // const users = await User.find({});
+  const users = await User.find({}).populate("projects.project");
   res.status(201).send({ users });
 });
 

@@ -5,11 +5,29 @@ const auth = require("../middleware/auth");
 
 const router = express.Router();
 
+const lookupUsers = {
+  from: "users",
+  as: "users",
+  localField: "_id",
+  foreignField: "projects.project"
+};
+
+const projectUsers = {
+  "users.password": 0,
+  "users.tokens": 0,
+  "users.createdAt": 0,
+  "users.updatedAt": 0,
+  "users.phone": 0,
+  "users.email": 0,
+  "users.siret": 0,
+  "users.projects": 0,
+  "users.society": 0
+};
+
 router.post("/", auth, async (req, res) => {
   // Create a new project
   try {
     const user = req.user;
-    //req.body = { ...req.body, users: [{ user: user._id }] };
     const project = new Project(req.body);
 
     const updatedUser = await User.updateOne(
@@ -30,15 +48,17 @@ router.get("/all", auth, async (req, res) => {
   const user = req.user;
   const projects = await Project.aggregate([
     {
-      $lookup: {
-        from: "users",
-        localField: "_id",
-        foreignField: "projects.project",
-        as: "userList"
+      $lookup: lookupUsers
+    },
+    {
+      $match: {
+        "users._id": user._id
       }
+    },
+    {
+      $project: projectUsers
     }
   ]);
-  // const projects = await Project.find({ "users.user": user });
   res.status(201).send({ projects });
 });
 
