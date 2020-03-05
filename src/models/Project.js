@@ -1,54 +1,53 @@
 const mongoose = require("mongoose");
 
-const projectSchema = mongoose.Schema({
+const projectSchema = mongoose.Schema(
+  {
     title: {
-        type: String,
-        required: true,
-        trim: true
+      type: String,
+      trim: true
     },
-    estimateAmount: { // Montant du devis
-        type: Number,
-        required: true,
-        trim: true
+    estimateAmount: {
+      // Montant du devis
+      type: Number,
+      trim: true
     },
-    completionDeadline: { // Délais de réalisation
-        type: Number,
-        required: true,
-        trim: true
+    completionDeadline: {
+      // Délais de réalisation en jour
+      type: Number,
+      trim: true
     },
     startDate: {
-        type: Date,
-        required: true,
+      type: Date
     },
     dueDate: {
-        type: Date,
-        required: true,
+      type: Date
     },
     status: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "ProjectStatus"
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ProjectStatuses"
     },
     stacks: {
-        type: String,
-        required: true,
-        trim: true
+      type: String,
+      trim: true
     },
-    hourlyCostDay: { // Coût horaire jour
-        type: Number,
-        required: true
+    hourlyCostDay: {
+      // Coût horaire jour
+      type: Number
     },
     sprints: [
-        {
-            sprint: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Sprint"
-            }
+      {
+        sprint: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Sprints"
         }
-    ],
-}, {
-    timestamps: true,
-});
+      }
+    ]
+  },
+  {
+    timestamps: true
+  }
+);
 
-const Project = mongoose.model("User", projectSchema);
+const Project = mongoose.model("Projects", projectSchema);
 
 module.exports = Project;

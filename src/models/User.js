@@ -3,77 +3,80 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const userSchema = mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  lastName: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  society: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  siret: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  phone: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    validate: value => {
-      if (!validator.isEmail(value)) {
-        throw new Error({ error: "Invalid Email address" });
+const userSchema = mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    society: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    siret: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    phone: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      validate: value => {
+        if (!validator.isEmail(value)) {
+          throw new Error({ error: "Invalid Email address" });
+        }
       }
-    }
-  },
-  password: {
-    type: String,
-    required: true,
-    minLength: 7
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true
+    },
+    password: {
+      type: String,
+      required: true,
+      minLength: 7
+    },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true
+        }
       }
-    }
-  ],
-  status: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "UserStatus"
-  },
-  profil: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "UserStatus"
-  },
-  projects: [
-    {
-      project: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Project"
+    ],
+    status: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "UserStatuses"
+    },
+    profil: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "UserProfils"
+    },
+    projects: [
+      {
+        project: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Projects"
+        }
       }
-    }
-  ],
-}, {
-  timestamps: true,
-});
+    ]
+  },
+  {
+    timestamps: true
+  }
+);
 
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function(next) {
   // Hash the password before saving the user model
   const user = this;
   if (user.isModified("password")) {
@@ -82,7 +85,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.methods.generateAuthToken = async function () {
+userSchema.methods.generateAuthToken = async function() {
   // Generate an auth token for the user
   const user = this;
   const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY);
@@ -104,6 +107,6 @@ userSchema.statics.findByCredentials = async (email, password) => {
   return user;
 };
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("Users", userSchema);
 
 module.exports = User;
