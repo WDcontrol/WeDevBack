@@ -47,14 +47,6 @@ const projectSchema = mongoose.Schema(
           ref: "Sprints"
         }
       }
-    ],
-    users: [
-      {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Users"
-        }
-      }
     ]
   },
   {

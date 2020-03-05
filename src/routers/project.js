@@ -1,5 +1,6 @@
 const express = require("express");
 const Project = require("../models/Project");
+const User = require("../models/User");
 const auth = require("../middleware/auth");
 
 const router = express.Router();
@@ -8,11 +9,17 @@ router.post("/", auth, async (req, res) => {
   // Create a new project
   try {
     const user = req.user;
-    req.body = { ...req.body, users: [{ user: user._id }] };
+    //req.body = { ...req.body, users: [{ user: user._id }] };
     const project = new Project(req.body);
+
+    const updatedUser = await User.updateOne(
+      { _id: user._id },
+      { $push: { projects: { project } } }
+    );
+
     await project.save();
 
-    res.status(201).send({ project });
+    res.status(201).send({ project, updatedUser });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -21,7 +28,17 @@ router.post("/", auth, async (req, res) => {
 router.get("/all", auth, async (req, res) => {
   // get all projects
   const user = req.user;
-  const projects = await Project.find({ "users.user": user });
+  const projects = await Project.aggregate([
+    {
+      $lookup: {
+        from: "users",
+        localField: "_id",
+        foreignField: "projects.project",
+        as: "userList"
+      }
+    }
+  ]);
+  // const projects = await Project.find({ "users.user": user });
   res.status(201).send({ projects });
 });
 
