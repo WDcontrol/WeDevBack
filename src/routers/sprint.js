@@ -5,7 +5,7 @@ const auth = require("../middleware/auth");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  // Create a new project
+  // Create a new spring
   try {
     console.log(req.body);
     const sprint = new Sprint(req.body);
@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
 });
 
 router.post('/edit/:id', async (req, res) => {
-    // Edit existing project
+    // Edit existing spring
     try {
         const sprint = await Sprint.update({
             _id: req.params.id
@@ -38,7 +38,7 @@ router.post('/edit/:id', async (req, res) => {
 });
 
 router.get("/all", async (req, res) => {
-    // get all projects
+    // get all spring
     const sprints = await Sprint.find({}).populate();
     res.status(201).send({ sprints });
   });
