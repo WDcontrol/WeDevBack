@@ -40,12 +40,10 @@ const projectSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Clients"
     },
-    users: [
+    sprints: [
       {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Users"
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Sprints"
       }
     ]
   },
@@ -53,6 +51,15 @@ const projectSchema = mongoose.Schema(
     timestamps: true
   }
 );
+
+projectSchema.statics.addSprint = async function(projectId, sprint) {
+  const Project = this;
+  const project = await Project.updateOne(
+    { _id: projectId },
+    { $push: { sprints: sprint } }
+  );
+  return project;
+};
 
 const Project = mongoose.model("Projects", projectSchema);
 

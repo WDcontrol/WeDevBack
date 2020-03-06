@@ -1,5 +1,6 @@
 const express = require("express");
 const Project = require("../models/Project");
+const User = require("../models/User");
 const auth = require("../middleware/auth");
 
 const router = express.Router();
@@ -7,12 +8,15 @@ const router = express.Router();
 router.post("/", auth, async (req, res) => {
   // Create a new project
   try {
-    const user = req.user;
-    req.body = { ...req.body, users: [{ user: user._id }] };
     const project = new Project(req.body);
     await project.save();
 
-    res.status(201).send({ project });
+    const user = await User.update(
+      { _id: req.user._id },
+      { $push: { projects: project } }
+    );
+
+    res.status(201).send({ project, user });
   } catch (error) {
     res.status(400).send(error);
   }

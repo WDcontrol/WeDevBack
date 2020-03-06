@@ -1,52 +1,57 @@
 const express = require("express");
-const Task = require("../models/Task");
-const auth = require("../middleware/auth");
-const Sprint = require("../models/Sprint");
+const { Task, Sprint } = require("../models");
+const { auth, checkRights } = require("../middleware");
 
 const router = express.Router();
 
-router.post("/", auth, async (req, res) => {
-  // Create a new task
+router.post("/:projectId/:sprintId", auth, checkRights, async (req, res) => {
+  // Create
   try {
-    const user = req.user;
-    const sprintId = req.body.sprint;
-    const projectId = await Sprint.findOne({ _id: sprintId });
-    const isUserInProject = await Task.isUserInProject(
-      user,
-      projectId._id,
-      res
-    );
-    if (isUserInProject) {
-      const task = new Task(req.body);
-      await task.save();
-      res.status(201).send({ task });
-    }
+    const task = new Task(req.body);
+    await task.save();
+    await Sprint.addTask(req.params.sprintId, task);
+    res.status(201).send({ task });
   } catch (error) {
     res.status(400).send(error);
   }
 });
 
-router.get("/:sprintId/all", auth, async (req, res) => {
-  // Get all tasks
+router.get("/:projectId/:sprintId/all", auth, checkRights, async (req, res) => {
+  // Read all
   const user = req.user;
-  const sprintId = req.params.sprintId;
-  const projectId = await Sprint.findOne({ _id: sprintId });
-  const isUserInProject = await Task.isUserInProject(user, projectId._id, res);
-  if (isUserInProject) {
-    const tasks = await Task.find({ sprint: sprintId });
-    res.status(201).send({ tasks });
-  }
+  const project = user.projects.filter(project => {
+    return project._id == req.params.projectId;
+  });
+  const sprints = project[0].sprints;
+  res.status(201).send({ sprints });
 });
-router.get("/details/:id", auth, async (req, res) => {
-  // Show details
-  const user = req.user;
-  const id = req.params.id;
-  const sprintId = await Task.findOne({ _id: id });
-  const projectId = await Sprint.findOne({ _id: sprintId });
-  const isUserInProject = await Sprint.isUserInProject(user, projectId, res);
-  if (isUserInProject) {
-    res.status(201).send({ sprint });
+
+router.get(
+  "/:projectId/:sprintId/:taskId",
+  auth,
+  checkRights,
+  async (req, res) => {
+    // Read one
+    const taskId = req.params.taskId;
+    const task = await Task.findById({ _id: taskId });
+    res.status(201).send({ task });
   }
-});
+);
+
+router.post(
+  "/:projectId/:sprintId/:taskId",
+  auth,
+  checkRights,
+  async (req, res) => {
+    // Edit
+    try {
+      const taskId = req.params.taskId;
+      const task = await Task.updateOne({ _id: taskId }, req.body);
+      res.status(201).send({ task });
+    } catch (err) {
+      res.status(400).send({ error });
+    }
+  }
+);
 
 module.exports = router;

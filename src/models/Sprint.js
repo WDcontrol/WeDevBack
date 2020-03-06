@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Project = require("./Project");
 
 const sprintSchema = mongoose.Schema(
   {
@@ -18,26 +17,25 @@ const sprintSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "SprintStatuses"
     },
-    project: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Projects",
-      required: true
-    }
+    tasks: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tasks"
+      }
+    ]
   },
   {
     timestamps: true
   }
 );
 
-sprintSchema.statics.isUserInProject = async function(user, projectId, res) {
-  const project = await Project.findOne({
-    _id: projectId,
-    "users.user": user
-  });
-  if (!project) {
-    res.status(400).send({ error: "User can't access this project" });
-  }
-  return project ? true : false;
+sprintSchema.statics.addTask = async function(sprintId, task) {
+  const Sprint = this;
+  const sprint = await Sprint.updateOne(
+    { _id: sprintId },
+    { $push: { tasks: task } }
+  );
+  return sprint;
 };
 
 const Sprint = mongoose.model("Sprints", sprintSchema);

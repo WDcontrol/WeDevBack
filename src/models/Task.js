@@ -22,25 +22,12 @@ const taskSchema = mongoose.Schema(
       trim: true,
       get: v => Math.round(v),
       set: v => Math.round(v)
-    },
-    sprint: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Sprints",
-      required: true
     }
   },
   {
     timestamps: true
   }
 );
-
-taskSchema.statics.isUserInProject = async function(user, projectId, res) {
-  const project = await Project.find({ "users.user": user, _id: projectId });
-  if (!project) {
-    res.status(400).send({ error: "User can't access this project" });
-  }
-  return project ? true : false;
-};
 
 const Task = mongoose.model("Tasks", taskSchema);
 

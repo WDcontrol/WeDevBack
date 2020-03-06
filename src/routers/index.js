@@ -1,15 +1,8 @@
-const Project = require("./project");
-const Sprint = require("./sprint");
-const User = require("./user");
-const Client = require("./client");
-const Lists = require("./listSchema");
-const Task = require("./task");
+const project = require("./project");
+const sprint = require("./sprint");
+const user = require("./user");
+const client = require("./client");
+const lists = require("./listSchema");
+const task = require("./task");
 
-module.exports = {
-  Project,
-  User,
-  Client,
-  Lists,
-  Sprint,
-  Task
-};
+module.exports = { user, project, client, lists, sprint, task };

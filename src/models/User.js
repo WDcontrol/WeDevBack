@@ -61,7 +61,13 @@ const userSchema = mongoose.Schema(
     profil: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "UserProfils"
-    }
+    },
+    projects: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Projects"
+      }
+    ]
   },
   {
     timestamps: true
