@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Project = require("./Project");
 
 const taskSchema = mongoose.Schema(
   {
@@ -9,7 +10,6 @@ const taskSchema = mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
       trim: true
     },
     status: {
@@ -19,7 +19,6 @@ const taskSchema = mongoose.Schema(
     realisationTime: {
       // Temps de réalisation (int en heure)
       type: Number,
-      required: true,
       trim: true,
       get: v => Math.round(v),
       set: v => Math.round(v)
@@ -34,6 +33,14 @@ const taskSchema = mongoose.Schema(
     timestamps: true
   }
 );
+
+taskSchema.statics.isUserInProject = async function(user, projectId, res) {
+  const project = await Project.find({ "users.user": user, _id: projectId });
+  if (!project) {
+    res.status(400).send({ error: "User can't access this project" });
+  }
+  return project ? true : false;
+};
 
 const Task = mongoose.model("Tasks", taskSchema);
 

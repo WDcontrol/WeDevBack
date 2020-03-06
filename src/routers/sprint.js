@@ -10,20 +10,18 @@ router.post("/", auth, async (req, res) => {
     const user = req.user;
     const projectId = req.body.project;
     const isUserInProject = await Sprint.isUserInProject(user, projectId);
-    if (!isUserInProject) {
-      throw new Error("Can't access this project");
+    if (isUserInProject) {
+      const sprint = new Sprint(req.body);
+      await sprint.save();
+      res.status(201).send({ sprint });
     }
-    const sprint = new Sprint(req.body);
-    await sprint.save();
-    res.status(201).send({ sprint });
   } catch (error) {
     res.status(400).send(error);
   }
 });
 
 router.get("/:projectId/all", auth, async (req, res) => {
-  // get all projects
-
+  // get all sprints by project
   const user = req.user;
   const projectId = req.params.projectId;
   const isUserInProject = await Sprint.isUserInProject(user, projectId, res);
