@@ -29,11 +29,14 @@ const sprintSchema = mongoose.Schema(
   }
 );
 
-sprintSchema.statics.isUserInProject = async function(user, projectId) {
+sprintSchema.statics.isUserInProject = async function(user, projectId, res) {
   const project = await Project.findOne({
     _id: projectId,
     "users.user": user
   });
+  if (!project) {
+    res.status(400).send({ error: "User can't access this project" });
+  }
   return project ? true : false;
 };
 

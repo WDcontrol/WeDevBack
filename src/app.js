@@ -8,6 +8,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+
 app.use("/users", User);
 app.use("/clients", Client);
 app.use("/sprints", Sprint);
