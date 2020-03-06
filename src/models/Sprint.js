@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Project = require("./Project");
 
 const sprintSchema = mongoose.Schema(
   {
@@ -8,30 +9,33 @@ const sprintSchema = mongoose.Schema(
       trim: true
     },
     startDate: {
-      type: Date,
-      required: true
+      type: Date
     },
     dueDate: {
-      type: Date,
-      required: true
+      type: Date
     },
     status: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "SprintStatuses"
     },
-    tasks: [
-      {
-        task: {
-          type: mongoose.Schema.Types.ObjectId,
-          task: "Tasks"
-        }
-      }
-    ]
+    project: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Projects",
+      required: true
+    }
   },
   {
     timestamps: true
   }
 );
+
+sprintSchema.statics.isUserInProject = async function(user, projectId) {
+  const project = await Project.findOne({
+    _id: projectId,
+    "users.user": user
+  });
+  return project ? true : false;
+};
 
 const Sprint = mongoose.model("Sprints", sprintSchema);
 

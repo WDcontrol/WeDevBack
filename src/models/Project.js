@@ -40,14 +40,6 @@ const projectSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Clients"
     },
-    sprints: [
-      {
-        sprint: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Sprints"
-        }
-      }
-    ],
     users: [
       {
         user: {

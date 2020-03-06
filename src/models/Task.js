@@ -23,6 +23,11 @@ const taskSchema = mongoose.Schema(
       trim: true,
       get: v => Math.round(v),
       set: v => Math.round(v)
+    },
+    sprint: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Sprints",
+      required: true
     }
   },
   {

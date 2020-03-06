@@ -1,15 +1,16 @@
 const express = require("express");
-const { User, Project, Client, Lists } = require("./routers");
-
+const { User, Project, Client, Lists, Sprint } = require("./routers");
+const cors = require("cors");
 const port = process.env.PORT;
 require("./db/db");
 
 const app = express();
 
 app.use(express.json());
-
+app.use(cors());
 app.use("/users", User);
 app.use("/clients", Client);
+app.use("/sprints", Sprint);
 app.use("/projects", Project);
 app.use("/list", Lists);
 
