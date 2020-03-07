@@ -36,6 +36,7 @@ router.get("/:projectId/:sprintId", auth, checkRights, async (req, res) => {
 router.post("/:projectId/:sprintId", auth, checkRights, async (req, res) => {
   // Edit
   try {
+    const sprintId = req.params.sprintId;
     const sprint = await Sprint.updateOne({ _id: sprintId }, req.body);
     res.status(201).send({ sprint });
   } catch (err) {

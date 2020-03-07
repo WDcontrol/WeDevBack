@@ -1,21 +1,16 @@
 const express = require("express");
 const Project = require("../models/Project");
 const User = require("../models/User");
-const auth = require("../middleware/auth");
+const { auth, checkRights } = require("../middleware");
 
 const router = express.Router();
 
 router.post("/", auth, async (req, res) => {
-  // Create a new project
+  // Create
   try {
     const project = new Project(req.body);
     await project.save();
-
-    const user = await User.update(
-      { _id: req.user._id },
-      { $push: { projects: project } }
-    );
-
+    const user = await User.addProject(req.user._id, project);
     res.status(201).send({ project, user });
   } catch (error) {
     res.status(400).send(error);
@@ -23,33 +18,27 @@ router.post("/", auth, async (req, res) => {
 });
 
 router.get("/all", auth, async (req, res) => {
-  // get all projects
+  // Get all
   const user = req.user;
-  const projects = await Project.find({ "users.user": user });
+  const projects = user.projects;
   res.status(201).send({ projects });
 });
 
-router.get("/details/:id", auth, async (req, res) => {
-  // Show details
-  const id = req.params.id;
+router.get("/:projectId", auth, checkRights, async (req, res) => {
+  // Details
   const user = req.user;
-  const project = await Project.find({ _id: id, "users.user": user });
-  if (project.length > 0) {
-    res.status(201).send({ project });
-  } else {
-    res.status(400).send("No project");
-  }
+  let project = user.projects.filter(project => {
+    return project._id == req.params.projectId;
+  });
+  project = project[0];
+  res.status(201).send({ project });
 });
 
-router.post("/edit/:id", auth, async (req, res) => {
-  // Edit existing project
+router.post("/:projectId", auth, checkRights, async (req, res) => {
+  // Edit
   try {
-    const id = req.params.id;
-    const user = req.user;
-    const project = await Project.updateOne(
-      { _id: id, "users.user": user },
-      req.body
-    );
+    const projectId = req.params.projectId;
+    const project = await Project.updateOne({ _id: projectId }, req.body);
     res.status(201).send({ project });
   } catch (error) {
     res.status(400).send(error);
