@@ -105,13 +105,13 @@ userSchema.statics.findByCredentials = async (email, password) => {
   return user;
 };
 
-projectSchema.statics.addProject = async function(userId, project) {
+userSchema.statics.addProject = async function(userId, project) {
   const User = this;
   const user = await User.updateOne(
     { _id: userId },
     { $push: { projects: project } }
   );
-  return project;
+  return user;
 };
 
 const User = mongoose.model("Users", userSchema);
