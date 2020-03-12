@@ -19,11 +19,7 @@ const checkRights = async (req, res, next) => {
 
     next();
   } catch (error) {
-    const errorString = req.params.sprintId
-      ? "Not authorized to access this sprint"
-      : "Not authorized to access this project";
-
-    res.status(401).send({ error: errorString });
+    res.status(401).send({ error: "Unauthorized access" });
   }
 };
 
