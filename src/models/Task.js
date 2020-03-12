@@ -9,18 +9,18 @@ const taskSchema = mongoose.Schema(
     },
     description: {
       type: String,
+      required: true,
       trim: true
     },
     status: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "TaskStatuses"
+      ref: "TaskStatuses",
+      required: true
     },
     realisationTime: {
-      // Temps de réalisation (int en heure)
+      // Temps de réalisation (en heure)
       type: Number,
-      trim: true,
-      get: v => Math.round(v),
-      set: v => Math.round(v)
+      trim: true
     }
   },
   {

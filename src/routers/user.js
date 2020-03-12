@@ -41,16 +41,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/me", auth, async (req, res) => {
   // View logged in user profile
-  const user = await User.findOne({ _id: req.user._id }).populate({
-    path: "projects", // add projects
-    populate: {
-      path: "sprints", // add sprints
-      populate: {
-        path: "tasks" // add tasks
-      }
-    }
-  });
-  const projects = user.projects;
+  const user = req.user;
   res.send({ user });
 });
 

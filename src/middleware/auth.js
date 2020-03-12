@@ -8,15 +8,26 @@ const auth = async (req, res, next) => {
     const user = await User.findOne({
       _id: data._id,
       "tokens.token": token
-    }).populate({
-      path: "projects", // add projects
-      populate: {
-        path: "sprints", // add sprints
-        populate: {
-          path: "tasks" // add tasks
-        }
-      }
-    });
+    }).populate([
+      {
+        path: "projects", // add projects
+        populate: [
+          "status",
+          {
+            path: "sprints", // add sprints
+            populate: [
+              {
+                path: "tasks", // add tasks
+                populate: "status"
+              },
+              "status"
+            ]
+          }
+        ]
+      },
+      "status",
+      "profil"
+    ]);
     if (!user) {
       throw new Error();
     }

@@ -15,7 +15,8 @@ const sprintSchema = mongoose.Schema(
     },
     status: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "SprintStatuses"
+      ref: "SprintStatuses",
+      required: true
     },
     tasks: [
       {

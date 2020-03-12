@@ -10,22 +10,27 @@ const projectSchema = mongoose.Schema(
     estimateAmount: {
       // Montant du devis
       type: Number,
-      trim: true
+      trim: true,
+      required: true
     },
     completionDeadline: {
-      // Délais de réalisation en jour
+      // Délais de réalisation (en jour)
       type: Number,
-      trim: true
+      trim: true,
+      required: true
     },
     startDate: {
-      type: Date
+      type: Date,
+      required: true
     },
     dueDate: {
-      type: Date
+      type: Date,
+      required: true
     },
     status: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "ProjectStatuses"
+      ref: "ProjectStatuses",
+      required: true
     },
     stacks: {
       type: String,
@@ -34,11 +39,13 @@ const projectSchema = mongoose.Schema(
     },
     hourlyCostDay: {
       // Coût horaire jour
-      type: Number
+      type: Number,
+      required: true
     },
     client: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Clients"
+      ref: "Clients",
+      required: true
     },
     sprints: [
       {
