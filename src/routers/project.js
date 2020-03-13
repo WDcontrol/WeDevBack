@@ -2,6 +2,7 @@ const express = require("express");
 const Project = require("../models/Project");
 const User = require("../models/User");
 const { auth, checkRights } = require("../middleware");
+const axios = require("axios");
 
 const router = express.Router();
 
@@ -42,6 +43,63 @@ router.post("/:projectId", auth, checkRights, async (req, res) => {
     res.status(201).send({ project });
   } catch (error) {
     res.status(400).send(error);
+  }
+});
+
+router.post("/:projectId/addIssue", auth, checkRights, async (req, res) => {
+  // Add issue
+  try {
+    const gitCredentials = req.body.gitCredentials;
+    const gitParams = req.body.gitParams;
+    const githubRepo = req.project[0].githubRepo;
+
+    axios
+      .post(
+        "https://api.github.com/repos/" +
+          githubRepo.owner +
+          "/" +
+          githubRepo.name +
+          "/issues",
+        gitParams,
+        {
+          auth: {
+            username: gitCredentials.username,
+            password: gitCredentials.password
+          }
+        }
+      )
+      .then(function(result) {
+        res.status(201).send(result.data);
+      })
+      .catch(function(error) {
+        res.status(400).send(error.response.data);
+      });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+router.post("/add/gitProject", auth, async (req, res) => {
+  // request : {"repo": "https://github.com/WDcontrol/WeDevBack"} , need a addProject.md repo on project root
+  try {
+    const repo = req.body.repo.split("github.com/")[1];
+    axios
+      .get("https://api.github.com/repos/" + repo + "/contents/addProject.md")
+      .then(async function(result) {
+        let data = result.data.content;
+        let buff = Buffer.from(data, "base64");
+        let text = buff.toString("ascii");
+
+        const project = new Project(JSON.parse(text));
+        await project.save();
+        res.status(201).send(project);
+      })
+      .catch(function(error) {
+        console.log(error);
+        res.status(400).send(error);
+      });
+  } catch (err) {
+    res.status(400).send({ error: "Can't find addProject at project root" });
   }
 });
 

@@ -8,6 +8,7 @@ const checkRights = async (req, res, next) => {
       return project._id == projectId;
     });
     if (project.length == 0) throw new Error();
+    req.project = project;
 
     // sprint rights
     if (req.params.sprintId) {
@@ -15,6 +16,7 @@ const checkRights = async (req, res, next) => {
         return sprint._id == req.params.sprintId;
       });
       if (sprint.length == 0) throw new Error();
+      req.sprint = sprint;
     }
 
     next();

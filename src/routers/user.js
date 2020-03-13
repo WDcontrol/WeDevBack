@@ -16,6 +16,17 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.post("/edit", auth, async (req, res) => {
+  // Edit
+  try {
+    const userId = req.user._id;
+    const user = await User.updateOne({ _id: userId }, req.body);
+    res.status(201).send({ user });
+  } catch (err) {
+    res.status(400).send({ error });
+  }
+});
+
 router.get("/all", async (req, res) => {
   // Get all
   const users = await User.find({});

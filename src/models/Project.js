@@ -52,7 +52,17 @@ const projectSchema = mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "Sprints"
       }
-    ]
+    ],
+    githubRepo: {
+      name: {
+        type: String,
+        trim: true
+      },
+      owner: {
+        type: String,
+        trim: true
+      }
+    }
   },
   {
     timestamps: true
