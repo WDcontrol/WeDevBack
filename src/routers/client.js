@@ -13,4 +13,10 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/all", async (req, res) => {
+  // Get all
+  const clients = await Client.find({});
+  res.status(201).send({ clients });
+});
+
 module.exports = router;

@@ -56,10 +56,12 @@ const userSchema = mongoose.Schema(
     ],
     status: {
       type: mongoose.Schema.Types.ObjectId,
+      required: true,
       ref: "UserStatuses"
     },
     profil: {
       type: mongoose.Schema.Types.ObjectId,
+      required: true,
       ref: "UserProfils"
     },
     projects: [
