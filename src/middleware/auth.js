@@ -3,7 +3,11 @@ const User = require("../models/User");
 
 const auth = async (req, res, next) => {
   console.log("Auth", req.header("Authorization"));
-  const token = req.header("Authorization").replace("Bearer ", "");
+  try {
+    const token = req.header("Authorization").replace("Bearer ", "");
+  } catch (error) {
+    res.status(401).send("You must specify a token.");
+  }
   const data = jwt.verify(token, process.env.JWT_KEY);
   try {
     const user = await User.findOne({
