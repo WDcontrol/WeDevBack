@@ -18,7 +18,6 @@ router.post("/:projectId", auth, checkRights, async (req, res) => {
 
 router.get("/:projectId/all", auth, checkRights, async (req, res) => {
   // Get all
-  console.log("project");
   const user = req.user;
   const project = await user.projects.filter(project => {
     return project._id == req.params.projectId;
@@ -29,7 +28,6 @@ router.get("/:projectId/all", auth, checkRights, async (req, res) => {
 
 router.get("/:projectId/:sprintId", auth, checkRights, async (req, res) => {
   // Details
-  console.log("details");
   const sprintId = req.params.sprintId;
   const sprint = await Sprint.findById({ _id: sprintId });
   res.status(201).send({ sprint });
