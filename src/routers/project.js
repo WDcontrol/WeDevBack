@@ -7,14 +7,17 @@ const axios = require("axios");
 const router = express.Router();
 
 router.post("/", auth, async (req, res) => {
+  console.log(req.body);
   // Create
   try {
     const project = new Project(req.body);
     await project.save();
     const user = await User.addProject(req.user._id, project);
     res.status(201).send({ project, user });
+    console.log("try");
   } catch (error) {
     res.status(400).send(error);
+    console.log("catch");
   }
 });
 

@@ -1,5 +1,13 @@
 const express = require("express");
-const { user, project, client, lists, sprint, task } = require("./routers");
+const {
+  user,
+  project,
+  client,
+  lists,
+  sprint,
+  task,
+  stripe
+} = require("./routers");
 const cors = require("cors");
 const port = process.env.PORT;
 require("./db/db");
@@ -15,6 +23,7 @@ app.use("/tasks", task);
 app.use("/sprints", sprint);
 app.use("/projects", project);
 app.use("/list", lists);
+app.use("/stripe", stripe);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

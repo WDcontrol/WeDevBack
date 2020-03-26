@@ -22,8 +22,12 @@ router.get("/:projectId/:sprintId/all", auth, checkRights, async (req, res) => {
   const project = user.projects.filter(project => {
     return project._id == req.params.projectId;
   });
-  const sprints = project[0].sprints;
-  res.status(201).send({ sprints });
+  const sprints = project[0].sprints.filter(sprint => {
+    return sprint._id == req.params.sprintId;
+  });
+  const tasks = sprints[0].tasks;
+
+  res.status(201).send({ tasks });
 });
 
 router.get(
