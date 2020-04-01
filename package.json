@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npm i && env-cmd -f ./.env nodemon src/app.js"
+    "start": "npm i && node src/app.js"
   },
   "license": "MIT",
   "dependencies": {
