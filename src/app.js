@@ -9,7 +9,7 @@ const {
   stripe
 } = require("./routers");
 const cors = require("cors");
-const port = process.env.PORT;
+const port = process.env.PORT || 8000;
 require("./db/db");
 
 const app = express();
